@@ -500,9 +500,9 @@ def foodHeuristic(state, problem):
         dists = map(lambda c: (manhattan_dist(next_point, c, problem.walls), c), food_items)
         sorted_dists = sorted(dists, None, lambda elem: elem[0])
         dist, nearest = sorted_dists[0]
-        total_dist += dist
-           food_items.remove(nearest)
-          next_point = nearest
+        #total_dist += dist
+           #food_items.remove(nearest)
+          #next_point = nearest
         return dist
 
     return 0
