@@ -203,7 +203,29 @@ def betterEvaluationFunction(currentGameState: GameState):
     DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Terminal states
+    if currentGameState.isWin():
+        return float('inf')
+    if currentGameState.isLose():
+        return float('-inf')
+    
+    # Base score
+    score = currentGameState.getScore()
+    
+    # Pacman position
+    pacmanPos = currentGameState.getPacmanPosition()
+    
+    # Food evaluation
+    foodList = currentGameState.getFood().asList()
+    if foodList:
+        # Distance to closest food
+        foodDistances = [manhattanDistance(pacmanPos, food) for food in foodList]
+        closestFoodDist = min(foodDistances)
+        score += 10.0 / (closestFoodDist + 1)  # Encourage moving toward food
+        
+        # Penalty for remaining food
+        score -= 4 * len(foodList)
+    
 
 # Abbreviation
 better = betterEvaluationFunction
