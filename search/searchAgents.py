@@ -483,11 +483,11 @@ def foodHeuristic(state, problem):
     food_items = list(foodGrid.asList())
     def manhattan_dist(xy1, xy2, walls):
         dist = abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
-        for direction in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            dx, dy = Actions.directionToVector(direction)
-            nextx, nexty = int(xy1[0] + dx), int(xy1[1] + dy)
-            if foodGrid[nextx][nexty]:
-                dist -= 1
+        #for direction in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+        #   dx, dy = Actions.directionToVector(direction)
+        #    nextx, nexty = int(xy1[0] + dx), int(xy1[1] + dy)
+        #    if foodGrid[nextx][nexty]:
+        #        dist -= 1
         d = xy1[0] - xy2[0], xy1[1] - xy2[1]
         if dist == 2 and Actions.vectorToDirection(d) in Actions.getLegalNeighbors(xy1, walls):
              return 4
