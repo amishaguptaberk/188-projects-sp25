@@ -293,7 +293,56 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        def expectimax(state, depth, agentIndex):
+            # Terminal state check
+            if depth == 0 or state.isWin() or state.isLose():
+                return self.evaluationFunction(state)
+            
+            # Get legal actions for current agent
+            legalActions = state.getLegalActions(agentIndex)
+            
+            # Pacman's turn (maximizing player)
+            if agentIndex == 0:
+                maxVal = float('-inf')
+                for action in legalActions:
+                    successor = state.generateSuccessor(agentIndex, action)
+                    val = expectimax(successor, depth, 1)
+                    maxVal = max(maxVal, val)
+                return maxVal
+            
+            # Ghost's turn (expectation over random actions)
+            else:
+                expectedVal = 0
+                nextAgent = agentIndex + 1
+                nextDepth = depth
+                
+                # If this is the last ghost, next turn is Pacman's with decreased depth
+                if nextAgent >= state.getNumAgents():
+                    nextAgent = 0
+                    nextDepth = depth - 1
+                
+                # Calculate expected value (uniform probability over all actions)
+                for action in legalActions:
+                    successor = state.generateSuccessor(agentIndex, action)
+                    val = expectimax(successor, nextDepth, nextAgent)
+                    expectedVal += val
+                
+                return expectedVal / len(legalActions)  # Average over all actions
+        
+        # Get the best action for Pacman
+        legalActions = gameState.getLegalActions(0)
+        bestAction = None
+        bestVal = float('-inf')
+        
+        for action in legalActions:
+            successor = gameState.generateSuccessor(0, action)
+            val = expectimax(successor, self.depth, 1)
+            if val > bestVal:
+                bestVal = val
+                bestAction = action
+        
+        return bestAction
+
 
 def betterEvaluationFunction(currentGameState: GameState):
     """
