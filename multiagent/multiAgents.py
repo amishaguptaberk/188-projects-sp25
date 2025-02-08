@@ -373,8 +373,36 @@ def betterEvaluationFunction(currentGameState: GameState):
         score += 10.0 / (closestFoodDist + 1)  # Encourage moving toward food
         
         # Penalty for remaining food
-        score -= 4 * len(foodList)
+        score -=  4 * len(foodList)
     
+    # Ghost evaluation
+    ghostStates = currentGameState.getGhostStates()
+    for ghostState in ghostStates:
+        ghostPos = ghostState.getPosition()
+        ghostDist = manhattanDistance(pacmanPos, ghostPos)
+        
+        if ghostState.scaredTimer > 0:
+            # Ghost is scared - chase it
+            if ghostDist == 0:
+                score += 200  # Bonus for eating ghost
+            else:
+                score += 100.0 / (ghostDist + 1)  # Encourage chasing scared ghost
+        else:
+            # Ghost is dangerous - avoid it
+            if ghostDist == 0:
+                return float('-inf')  # Immediate death
+            elif ghostDist <= 2:
+                score -= 1000.0 / (ghostDist + 1)  # Heavy penalty for being close
+    
+    # Capsule evaluation
+    capsules = currentGameState.getCapsules()
+    if capsules:
+        capsuleDistances = [manhattanDistance(pacmanPos, capsule) for capsule in capsules]
+        closestCapsuleDist = min(capsuleDistances)
+        score += 50.0 / (closestCapsuleDist + 1)  # Encourage eating capsules
+        score -= 10 * len(capsules)  # Penalty for remaining capsules
+    
+    return score
 
 # Abbreviation
 better = betterEvaluationFunction
