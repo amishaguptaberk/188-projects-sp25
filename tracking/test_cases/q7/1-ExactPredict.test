@@ -20,7 +20,7 @@ elapse: "True"
 
 checkUniform: "False"
 maxMoves: "75"
-numParticles: "5000"
+
 numGhosts: "1"
 ghost: "SeededRandomGhostAgent"
 errorMsg: "Exact inference elapseTime test: %d inference errors."

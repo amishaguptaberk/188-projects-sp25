@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-#
+# 
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -72,7 +72,7 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-def depthFirstSearch(problem):
+def depthFirstSearch(problem: SearchProblem):
     """
     Search the deepest nodes in the search tree first.
 
@@ -82,68 +82,70 @@ def depthFirstSearch(problem):
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
 
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    print("Start:", problem.getStartState())
+    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    # util.raiseNotDefined()
-    stack = util.Stack()
-    stack.push((problem.getStartState(), []))
-    visited = list()
+    frontier = util.Stack()
+    frontier.push((problem.getStartState(), []))
+    visited = set()
 
-    while not stack.isEmpty():
-        currentState, steps = stack.pop()
-        if currentState in visited:
+    while not frontier.isEmpty():
+        state, actions = frontier.pop()
+        if state in visited:
             continue
-        if problem.isGoalState(currentState):
-            return steps
+        visited.add(state)
 
-        visited.append(currentState)
-        for state, action, cost in problem.getSuccessors(currentState):
-            stack.push((state, steps + [ action ]))
+        if problem.isGoalState(state):
+            return actions
+
+        for successor, action, stepCost in problem.getSuccessors(state):
+            if successor not in visited:
+                frontier.push((successor, actions + [action]))
 
     return []
 
-def breadthFirstSearch(problem):
+def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    # util.raiseNotDefined()
-    queue = util.Queue()
-    queue.push((problem.getStartState(), []))
-    visited = list()
+    frontier = util.Queue()
+    start = problem.getStartState()
+    frontier.push((start, []))
+    visited = set()
+    visited.add(start)
 
-    while not queue.isEmpty():
-        currentState, steps = queue.pop()
-        if currentState in visited:
-            continue
-        if problem.isGoalState(currentState):
-            return steps
+    while not frontier.isEmpty():
+        state, actions = frontier.pop()
 
-        visited.append(currentState)
-        for state, action, cost in problem.getSuccessors(currentState):
-            queue.push((state, steps + [ action ]))
+        if problem.isGoalState(state):
+            return actions
+
+        for successor, action, stepCost in problem.getSuccessors(state):
+            if successor not in visited:
+                visited.add(successor)
+                frontier.push((successor, actions + [action]))
 
     return []
 
-def uniformCostSearch(problem):
+def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    # util.raiseNotDefined()
-    queue = util.PriorityQueue()
-    queue.push((problem.getStartState(), [], 0), 0)
-    visited = list()
+    frontier = util.PriorityQueue()
+    frontier.push((problem.getStartState(), [], 0), 0)
+    visited = set()
 
-    while not queue.isEmpty():
-        currentState, steps, existedCost = queue.pop()
-        if currentState in visited:
+    while not frontier.isEmpty():
+        state, actions, cost = frontier.pop()
+
+        if state in visited:
             continue
-        if problem.isGoalState(currentState):
-            return steps
+        visited.add(state)
 
-        visited.append(currentState)
-        for state, action, cost in problem.getSuccessors(currentState):
-            queue.push((state, steps + [ action ], existedCost + cost), existedCost + cost)
+        if problem.isGoalState(state):
+            return actions
+
+        for successor, action, stepCost in problem.getSuccessors(state):
+            if successor not in visited:
+                newCost = cost + stepCost
+                frontier.push((successor, actions + [action], newCost), newCost)
 
     return []
 
@@ -154,24 +156,28 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    # util.raiseNotDefined()
-    queue = util.PriorityQueue()
-    queue.push((problem.getStartState(), [], 0), 0)
-    visited = dict()
+    frontier = util.PriorityQueue()
+    start = problem.getStartState()
+    frontier.push((start, [], 0), heuristic(start, problem))
+    visited = set()
 
-    while not queue.isEmpty():
-        currentState, steps, existedCost = queue.pop()
-        if currentState in visited and visited[currentState] <= existedCost:
+    while not frontier.isEmpty():
+        state, actions, cost = frontier.pop()
+
+        if state in visited:
             continue
-        if problem.isGoalState(currentState):
-            return steps
+        visited.add(state)
 
-        visited[currentState] = existedCost
-        for state, action, cost in problem.getSuccessors(currentState):
-            queue.push((state, steps + [ action ], existedCost + cost), existedCost + cost + heuristic(state, problem))
+        if problem.isGoalState(state):
+            return actions
+
+        for successor, action, stepCost in problem.getSuccessors(state):
+            if successor not in visited:
+                newCost = cost + stepCost
+                frontier.push((successor, actions + [action], newCost),
+                              newCost + heuristic(successor, problem))
 
     return []
 

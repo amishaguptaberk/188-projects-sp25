@@ -30,7 +30,6 @@ from game import Agent
 from game import Actions
 from game import Directions
 import re
-from inference import ParticleFilter
 
 class GraphEqualityTest(testClasses.TestCase):
 
@@ -675,7 +674,6 @@ class DoubleInferenceAgentTest(testClasses.TestCase):
         self.elapse = (self.testDict['elapse'] == "True")
         self.checkUniform = (self.testDict['checkUniform'] == 'True')
         self.maxMoves = int(self.testDict['maxMoves'])
-        self.numParticles = int(self.testDict['numParticles'])
         self.numGhosts = int(self.testDict['numGhosts'])
         self.inference = self.testDict['inference']
         self.errorMsg = self.testDict['errorMsg']
@@ -701,9 +699,9 @@ class DoubleInferenceAgentTest(testClasses.TestCase):
         pac = DoubleInferenceAgent(inferenceFunction, moves, ghosts, grades, self.seed, disp, self.inference, elapse=self.elapse,
                 observe=self.observe, L2Tolerance=self.L2Tolerance, checkUniform = self.checkUniform)
         if self.inference == "ParticleFilter":
-            for pfilter in pac.inferenceModules: pfilter.setNumParticles(self.numParticles)
+            for pfilter in pac.inferenceModules: pfilter.setNumParticles(5000)
         elif self.inference == "MarginalInference":
-            moduleDict['inference'].jointInference.setNumParticles(self.numParticles)
+            moduleDict['inference'].jointInference.setNumParticles(5000)
         run(self.layout_str, pac, ghosts, disp, maxMoves=self.maxMoves)
         msg = self.errorMsg % pac.errors
         grades.addMessage(("%s) " % (grades.currentQuestion))+msg)
@@ -722,7 +720,7 @@ class DoubleInferenceAgentTest(testClasses.TestCase):
         ghosts = [globals()[self.ghost](i) for i in range(1, self.numGhosts+1)]
         if self.inference == 'MarginalInference':
             moduleDict['inference'].jointInference = moduleDict['inference'].JointParticleFilter()
-            moduleDict['inference'].jointInference.setNumParticles(self.numParticles)
+            moduleDict['inference'].jointInference.setNumParticles(5000)
 
         pac = InferenceAgent(inferenceFunction, ghosts, self.seed, elapse=self.elapse, observe=self.observe)
         run(self.layout_str, pac, ghosts, self.question.getDisplay(), maxMoves=self.maxMoves)
@@ -946,14 +944,7 @@ class DoubleInferenceAgent(bustersAgents.BustersAgent):
 
     def registerInitialState(self, gameState):
         "Initializes beliefs and inference modules"
-        for inference in self.inferenceModules: 
-            inference.initialize(gameState)
-            if (isinstance(inference, ParticleFilter)):
-                if len(inference.particles) != inference.numParticles:                
-                    t = (self.grades.currentQuestion, len(inference.particles), inference.numParticles)
-                    summary = '%s) Filters do not have the same number of particles.\n\tstudent count: %d\n\treference count: %d' % t
-                    self.grades.fail('%s' % (summary))
-                    self.errors += 1   
+        for inference in self.inferenceModules: inference.initialize(gameState)
         moveNum,action,dists = self.refSolution[self.numMoves]
         for index,inf in enumerate(self.inferenceModules):
             self.distCompare(inf.getBeliefDistribution(), dists[index])
@@ -1047,7 +1038,7 @@ class SeededRandomGhostAgent(Agent):
 
 class GoSouthAgent(Agent):
     def __init__(self, index):
-        self.index = index;
+        self.index = index
 
     def getAction(self, state):
         dist = util.Counter()

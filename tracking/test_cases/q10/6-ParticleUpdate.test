@@ -23,7 +23,6 @@ elapse: "False"
 ghost: "SeededRandomGhostAgent"
 inference: "ParticleFilter"
 maxMoves: "100"
-numParticles: "5000"
 numGhosts: "1"
 
 

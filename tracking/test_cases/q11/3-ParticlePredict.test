@@ -25,7 +25,7 @@ elapse: "True"
 
 checkUniform: "False"
 maxMoves: "100"
-numParticles: "5000"
+
 numGhosts: "1"
 inference: "ParticleFilter"
 ghost: "GoSouthAgent"

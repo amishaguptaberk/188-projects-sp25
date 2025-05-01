@@ -19,7 +19,7 @@ elapse: "True"
 
 checkUniform: "False"
 maxMoves: "100"
-numParticles: "5000"
+
 numGhosts: "4"
 
 errorMsg: "Exact inference full test: %d inference errors."

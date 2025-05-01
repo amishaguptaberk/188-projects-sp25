@@ -28,7 +28,7 @@ elapse: "True"
 
 checkUniform: "False"
 maxMoves: "200"
-numParticles: "5000"
+
 numGhosts: "2"
 ghost: "SeededRandomGhostAgent"
 errorMsg: "Exact inference full test: %d inference errors."

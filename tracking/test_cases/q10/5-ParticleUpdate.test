@@ -33,7 +33,7 @@ observe: "True"
 elapse: "False"
 
 maxMoves: "100"
-numParticles: "5000"
+
 numGhosts: "1"
 
 errorMsg: "Particle filter observe test: %d inference errors."

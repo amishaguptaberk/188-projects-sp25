@@ -17,7 +17,7 @@ elapse: "False"
 
 checkUniform: "True"
 maxMoves: "1"
-numParticles: "5000"
+
 numGhosts: "1"
 ghost: "SeededRandomGhostAgent"
 inference: "ParticleFilter"

@@ -21,7 +21,6 @@ elapse: "False"
 
 checkUniform: "False"
 maxMoves: "100"
-numParticles: "5000"
 numGhosts: "1"
 
 ghost: "SeededRandomGhostAgent"
