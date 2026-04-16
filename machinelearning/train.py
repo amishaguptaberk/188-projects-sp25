@@ -62,16 +62,17 @@ def train_regression(model, dataset):
     """
     "*** YOUR CODE HERE ***"
     optimizer = optim.Adam(model.parameters(), lr=0.005)
-    dataloader = DataLoader(dataset, batch_size=200, shuffle=True)
-    for _ in range(2000):
+    dataloader = DataLoader(dataset, batch_size=200, shuffle=False)
+    for _ in range(3000):
         for batch in dataloader:
             x, y = batch['x'], batch['label']
             optimizer.zero_grad()
             loss = regression_loss(model(x), y)
             loss.backward()
             optimizer.step()
-        if loss.item() <= 0.018:
-            break
+        with no_grad():
+            if regression_loss(model(x), y).item() <= 0.015:
+                break
 
 
 def train_digitclassifier(model, dataset):
