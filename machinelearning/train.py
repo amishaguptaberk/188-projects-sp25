@@ -110,8 +110,8 @@ def train_languageid(model, dataset):
     """
     model.train()
     "*** YOUR CODE HERE ***"
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
-    for epoch in range(25):
+    optimizer = optim.Adam(model.parameters(), lr=0.002)
+    for epoch in range(40):
         for bucket_id in range(len(dataset.train_buckets)):
             start, end = dataset.train_buckets[bucket_id]
             if start == end:
