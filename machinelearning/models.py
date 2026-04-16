@@ -241,7 +241,15 @@ def Convolve(input: tensor, weight: tensor):
     weight_dimensions = weight.shape
     Output_Tensor = tensor(())
     "*** YOUR CODE HERE ***"
-
+    input_h, input_w = input_tensor_dimensions
+    weight_h, weight_w = weight_dimensions
+    out_h = input_h - weight_h + 1
+    out_w = input_w - weight_w + 1
+    rows = []
+    for y in range(out_h):
+        row = [tensordot(input[y:y+weight_h, x:x+weight_w], weight, dims=2) for x in range(out_w)]
+        rows.append(stack(row))
+    Output_Tensor = stack(rows)
     "*** End Code ***"
     return Output_Tensor
 
