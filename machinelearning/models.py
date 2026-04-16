@@ -273,6 +273,8 @@ class DigitConvolutionalModel(Module):
 
         self.convolution_weights = Parameter(ones((3, 3)))
         """ YOUR CODE HERE """
+        self.fc1 = Linear(26 * 26, 128)
+        self.fc2 = Linear(128, output_size)
 
 
     def forward(self, x):
@@ -286,6 +288,8 @@ class DigitConvolutionalModel(Module):
         )
         x = x.flatten(start_dim=1)
         """ YOUR CODE HERE """
+        x = relu(self.fc1(x))
+        return self.fc2(x)
 
 
 class Attention(Module):

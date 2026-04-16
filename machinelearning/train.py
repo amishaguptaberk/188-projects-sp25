@@ -131,3 +131,14 @@ def Train_DigitConvolution(model, dataset):
     Trains the model.
     """
     """ YOUR CODE HERE """
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    dataloader = DataLoader(dataset, batch_size=50, shuffle=True)
+    for epoch in range(100):
+        for batch in dataloader:
+            x, y = batch['x'], batch['label']
+            optimizer.zero_grad()
+            loss = digitconvolution_Loss(model(x), y)
+            loss.backward()
+            optimizer.step()
+        if dataset.get_validation_accuracy() >= 0.80:
+            break
